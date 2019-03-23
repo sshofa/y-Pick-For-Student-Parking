@@ -1,26 +1,39 @@
 import random
 
-def pickStudent(numStudent, numPicks):
-    #apply weights to certain students. i.e. imagine that students 0-10 bought 7 tickets
-    studentNumber = 100*list(range(0,4)) + 3*list(range(4,30)) + list(range(31,333))
-    result = []
+class lottery():
+    def __init__(self):
+        self.student=[]
+        for i in range (1,299):
+            self.student.append(i)
+        self.student.extend([300]*50)
+        self.pick=None
+    def pickStudent(self):
+        self.pick=random.choice(self.student)
+    def winner(self, numStudent):
+        if str(numStudent) == str(self.pick):
+            return 1
+        else:
+            return 0
+
+def testMyLuck(numStudent, numPicks, game):
     numHits = 0
     for t in range(numPicks):
-        chosenStudent = random.choice(studentNumber)
-        result.append(chosenStudent)
-        studentNumber.remove(chosenStudent)
-        if chosenStudent == numStudent:
-            numHits += 1
-        probability = round((numHits / numPicks)*100,3)
+        game.pickStudent()
+        numHits += game.winner(numStudent)
+    probability = (numHits / numPicks)*100
     return probability
-
-def simulate(numStudent, numPicks, numTrials):
-    for t in range(numTrials):
-        probability = []
-        probability.append(pickStudent(numStudent, numPicks))
-        true_probability = sum(probability)/len(probability)
-    print('The probability that I will get picked is ', true_probability,'%')
-
-for simulations in (1000, 10000, 100000, 1000000, 10000000):
-    print("Simulation iterations: ", simulations)
-    simulate(3, 100, simulations)
+    
+game = lottery()
+def simulation (numSim):
+    probabilityArray = []
+    for i in range(numSim):
+        probabilityArray.append(testMyLuck(300,50,game))
+    avgProbability = sum(probabilityArray)/len(probabilityArray)
+    print ('The probablity that I will get chosen is', avgProbability, '%')
+    
+for simulations in (10, 100, 1000, 10000, 100000):
+    print ('Number of simulations =', simulations)
+    simulation(simulations)
+#for simulations in (1000, 10000, 100000, 1000000):
+#    print("Simulation iterations: ", simulations)
+ #   pickStudent(300, simulations, lottery())
